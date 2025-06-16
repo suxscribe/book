@@ -27,3 +27,4 @@ src/outline*.txt
 latex/*
 browser.trace
 package.json
+book.epub

@@ -1,4 +1,4 @@
-.PHONY: book widgets publish clean download wc lint examples
+.PHONY: book widgets publish clean download wc lint examples epub
 
 FLAGS=
 
@@ -39,10 +39,10 @@ widgets: \
 	www/widgets/lab16-browser.html www/widgets/lab16.js
 
 src/lab%.full.py: src/lab%.py infra/inline.py infra/asttools.py
-	python3 infra/inline.py $< > $@
+	python infra/inline.py $< > $@
 
 src/outline%.txt: src/lab%.py infra/inline.py infra/asttools.py infra/outlines.py book/outline.txt
-	python3 infra/outlines.py $< --template book/outline.txt > $@
+	python infra/outlines.py $< --template book/outline.txt > $@
 
 outlines: $(patsubst %,src/outline%.txt,$(shell seq 1 16))
 
@@ -51,6 +51,8 @@ CHAPTER=all
 PANDOC=pandoc --from markdown --to html --lua-filter=infra/filter.lua --fail-if-warnings --metadata-file=config.json --highlight-style=infra/wbecode.theme $(FLAGS)
 
 PANDOC_LATEX=pandoc --number-sections --standalone --from markdown --to latex --fail-if-warnings --metadata-file=config.json --lua-filter=infra/filter.lua --highlight-style=infra/wbecode.theme $(FLAGS)
+
+PANDOC_EPUB=pandoc --number-sections --standalone --from markdown --to epub --metadata-file=config.json --lua-filter=infra/filter.lua --highlight-style=infra/wbecode.theme --css=www/book-epub.css --epub-cover-image=cover.jpg $(FLAGS)
 
 # Generates a simple chapter latex rendering meant to be inserted into the larger book skeleton.
 latex-chapters: $(patsubst %,latex/%-chapter.tex,$(CHAPTERS))
@@ -73,6 +75,12 @@ latex/book.pdf: latex/book.tex latex/macros.tex
 	(cd latex && ln -f -s ../www/im/ im)
 	(cd latex && pdflatex book.tex)
 
+# Build the complete book as an ePub
+epub: book.epub
+book.epub: $(patsubst %,book/%.md,$(CHAPTERS)) infra/filter.lua config.json www/book-epub.css
+	(ln -sf www/im im && ln -sf www/examples examples) || (mklink /D im www\\im && mklink /D examples www\\examples) || true
+	$(PANDOC_EPUB) --toc --metadata=mode:epub --metadata=title:"Web Browser Engineering" --metadata=author:"Pavel Panchekha and Chris Harrelson" $(patsubst %,book/%.md,$(CHAPTERS)) -o book.epub
+
 www/%.html: book/%.md infra/template.html infra/signup.html infra/filter.lua config.json src/lab*.py
 	$(PANDOC) --toc --metadata=mode:book --template infra/template.html -c book.css $< -o $@
 
@@ -80,10 +88,10 @@ www/rss.xml: news.yaml infra/rss-template.xml
 	pandoc --template infra/rss-template.xml  -f markdown -t html $< -o $@
 
 www/widgets/lab%.js: src/lab%.py src/lab%.hints infra/compile.py infra/asttools.py src/runtime*.js
-	python3 infra/compile.py $< $@ --hints src/lab$*.hints
+	python infra/compile.py $< $@ --hints src/lab$*.hints
 
 www/widgets/server%.js: src/server%.py src/server%.hints infra/compile.py infra/asttools.py
-	python3 infra/compile.py $< $@ --hints src/server$*.hints
+	python infra/compile.py $< $@ --hints src/server$*.hints
 
 www/onepage/%.html: book/%.md infra/chapter.html infra/filter.lua config.json src/lab*.py
 	$(PANDOC) --toc --metadata=mode:onepage --variable=cur:$* --template infra/chapter.html $< -o $@
@@ -110,10 +118,10 @@ backup:
 	rsync server:/var/www/wbe/db.json infra/db.$(shell date +%Y-%m-%d).pickle
 
 test-server:
-	(cd www/ && python3 ../infra/server.py)
+	(cd www/ && python ../infra/server.py)
 
 lint test:
-	python3 -m doctest infra/compiler.md
-	python3 -m doctest infra/annotate_code.md
-	python3 infra/runtests.py config.json --chapter $(CHAPTER)
+	python -m doctest infra/compiler.md
+	python -m doctest infra/annotate_code.md
+	python infra/runtests.py config.json --chapter $(CHAPTER)
 	! grep -n '^```' book/*.md | awk '(NR % 2) {print}' | grep -v '{.'

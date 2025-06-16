@@ -59,14 +59,18 @@ function DisableLinks(el)
 end
 
 function Note(el)
-  if not config.print then
-    -- Footnotes become margin notes
+  if config.epub then
+    -- For ePub, keep footnotes as proper footnotes (don't convert to margin notes)
+    return el
+  elseif not config.print then
+    -- For web, footnotes become margin notes
     note = pandoc.Span(el.content[1].content)
     note.classes = { "note" }
     wrapper = pandoc.Span { note }
     wrapper.classes = { "note-container" }
     return wrapper
   else
+    -- For print, keep as footnotes
     return el
   end
 end

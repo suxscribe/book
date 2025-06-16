@@ -1,0 +1,284 @@
+/* ePub-optimized CSS for Web Browser Engineering book
+ * Based on book.css but optimized for e-readers, especially Kindle
+ */
+
+/* Remove width constraints that cause narrow layout on Kindle */
+html {
+  font-size: 1em;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Remove max-width constraint that causes narrow layout */
+  margin: 0;
+  /* padding: 1em; */
+  /* font-family: serif;  */
+  /* Use system serif font for better e-reader compatibility */
+  font-weight: normal;
+  /* text-align: justify; */
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  /* color: black; Explicit color for better compatibility */
+}
+
+/* Typography */
+pre,
+code {
+  hyphens: none;
+  -webkit-hyphens: none;
+  font-family: monospace; /* Use system monospace */
+}
+
+pre {
+  font-size: 0.9em;
+  overflow: auto;
+  padding: 0.5em;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  margin: 1em 0;
+  text-wrap: normal;
+}
+
+h1 {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin: 2em 0 1em;
+  text-align: center;
+  page-break-after: avoid;
+}
+
+h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 1.5em 0 0.5em;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin: 1em 0 0.5em;
+  page-break-after: avoid;
+}
+
+/* Remove web-specific header numbering that doesn't work well in ePub */
+body > h1::before {
+  content: none;
+}
+
+header {
+  text-align: center;
+  margin: 2em 0 1em;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8em;
+  font-weight: normal;
+  text-align: center;
+}
+
+header .author {
+  font-style: italic;
+  margin-top: 0.5em;
+}
+
+/* Paragraphs */
+p {
+  margin: 0.5em 0;
+}
+
+p + p {
+  text-indent: 1.5em;
+  margin-top: 0;
+}
+
+/* Lists */
+li {
+  margin: 0.5em 0;
+}
+
+/* Remove complex navigation elements that don't work in ePub */
+nav.links {
+  display: none;
+}
+
+/* Remove complex TOC styling - let ePub handle TOC natively */
+#toc,
+nav#toc {
+  display: none;
+}
+
+/* Simplified info boxes for ePub */
+.todo,
+.quirk,
+.warning,
+.installation,
+.further,
+.demo,
+.example,
+.output {
+  padding: 1em;
+  margin: 1em 0;
+  border: 2px solid #666;
+  page-break-inside: avoid;
+}
+
+.quirk {
+  border-color: purple;
+}
+.warning {
+  border-color: red;
+}
+.installation {
+  border-color: blue;
+}
+.demo {
+  border-color: gray;
+}
+.further {
+  border-color: green;
+}
+
+.quirk:before,
+.warning:before,
+.installation:before,
+.demo:before,
+.further:before {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  font-size: 1.1em;
+}
+
+.quirk:before {
+  content: 'Quirk';
+}
+.warning:before {
+  content: 'Warning';
+}
+.installation:before {
+  content: 'Installation';
+}
+.demo:before {
+  content: 'Demonstration';
+}
+.further:before {
+  content: 'Go further';
+}
+
+/* Remove web-specific widgets and popups */
+.widget,
+#overlay,
+.popup,
+.tools,
+.feedback,
+#signup,
+aside.ad {
+  display: none;
+}
+
+/* Basic link styling */
+a {
+  color: blue;
+  text-decoration: underline;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  page-break-inside: avoid;
+}
+
+/* Code syntax highlighting - simplified for ePub */
+code .st {
+  color: #666;
+} /* strings */
+code .cf {
+  color: #000080;
+} /* control flow */
+code .kw {
+  color: #000080;
+  font-weight: bold;
+} /* keywords */
+code .im {
+  color: #000080;
+} /* imports */
+code .co {
+  color: #008000;
+} /* comments */
+
+/* Code outlines */
+.outline {
+  font-size: 0.8em;
+  font-family: monospace;
+  background-color: #f9f9f9;
+  padding: 1em;
+  margin: 1em 0;
+  border: 1px solid #ddd;
+}
+
+.outline code {
+  display: block;
+  margin: 0.2em 0;
+  page-break-inside: avoid;
+}
+
+.outline > code {
+  margin: 0.3em 0;
+}
+
+.outline code > code {
+  margin-left: 2em;
+}
+
+/* Remove complex footnote styling - let ePub handle footnotes natively */
+.note-container,
+.note {
+  /* These will be handled as proper footnotes by not converting them */
+}
+
+/* Ensure good page breaks */
+h1,
+h2,
+h3 {
+  page-break-after: avoid;
+}
+
+.example,
+.output,
+.quirk,
+.warning,
+.installation,
+.demo,
+.further {
+  page-break-inside: avoid;
+}
+
+/* Center elements */
+.center {
+  text-align: center;
+}
+
+/* Author pictures */
+.author-picture {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.header-section-number {
+  color: #888;
+}
+.header-section-number:after {
+  content: '.';
+}
+
+.footnote-ref {
+  vertical-align: super;
+  margin-left: 2px;
+  display: inline-block;
+  font-size: 0.7em;
+}

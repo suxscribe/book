@@ -16,7 +16,7 @@ body {
   /* padding: 1em; */
   /* font-family: serif;  */
   /* Use system serif font for better e-reader compatibility */
-  font-weight: normal;
+  /* font-weight: normal; */
   /* text-align: justify; */
   hyphens: auto;
   -webkit-hyphens: auto;
@@ -29,6 +29,8 @@ code {
   hyphens: none;
   -webkit-hyphens: none;
   font-family: monospace; /* Use system monospace */
+  line-height: 1.5em;
+  white-space: normal;
 }
 
 pre {
@@ -36,9 +38,21 @@ pre {
   overflow: auto;
   padding: 0.5em;
   background-color: #f5f5f5;
-  border: 1px solid #ddd;
+  border: 1px solid #eee;
   margin: 1em 0;
-  text-wrap: normal;
+}
+
+pre > code.sourceCode > span {
+  line-height: 1.25em !important;
+  display: inline !important;
+}
+pre > code.sourceCode > span:empty {
+  display: none;
+}
+
+/* Override Pandoc's default white-space: pre to allow wrapping */
+pre > code.sourceCode {
+  white-space: pre-wrap !important;
 }
 
 h1 {
